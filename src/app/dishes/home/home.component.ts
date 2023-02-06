@@ -9,6 +9,8 @@ import { DishesService } from '../dishes.service';
 })
 export class HomeComponent implements OnInit {
   allDishes: Dishes[] = [];
+  deleteModal: any;
+  idTodelete: string = "";
 
   constructor(private dishService: DishesService) { }
 
@@ -19,6 +21,20 @@ export class HomeComponent implements OnInit {
   get() {
     this.dishService.getAll().subscribe((data: any) => {
       this.allDishes = data;
+    });
+  }
+
+  openDeleteModal(id: string) {
+    this.idTodelete = id;
+    this.deleteModal.show();
+  }
+
+  delete() {
+    this.dishService.deleteById(this.idTodelete).subscribe({
+      next: (data) => {
+        this.allDishes = this.allDishes.filter(_ => _.id != this.idTodelete)
+        this.deleteModal.hide();
+      },
     });
   }
 }
